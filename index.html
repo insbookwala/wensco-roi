@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wensco × Shopify — ROI Analysis</title>
+  <style>
+    :root {
+      --green: #008060;
+      --green-light: #00a37a;
+      --green-pale: #e8f5f0;
+      --green-mid: #d1ede6;
+      --black: #1a1a1a;
+      --gray-900: #2d2d2d;
+      --gray-700: #4a4a4a;
+      --gray-500: #6b6b6b;
+      --gray-200: #e8e8e8;
+      --gray-100: #f5f7f5;
+      --white: #ffffff;
+      --red: #c0392b;
+      --red-pale: #fdf2f2;
+      --amber: #b45309;
+      --amber-pale: #fef9ee;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+      color: var(--black);
+      background: var(--white);
+      line-height: 1.6;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      background: var(--green);
+      padding: 72px 40px 64px;
+      text-align: center;
+    }
+    .hero .eyebrow {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.7);
+      margin-bottom: 16px;
+    }
+    .hero h1 {
+      font-size: clamp(32px, 5vw, 56px);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -1px;
+      margin-bottom: 16px;
+      color: var(--white);
+    }
+    .hero h1 span { color: rgba(255,255,255,0.75); }
+    .hero .subtitle {
+      font-size: 18px;
+      color: rgba(255,255,255,0.8);
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* ── HOVER TOOLTIPS ── */
+    .tip-wrap {
+      position: relative;
+      display: inline-block;
+      cursor: help;
+      border-bottom: 1px dashed var(--green);
+    }
+    .tip-wrap::after {
+      content: attr(data-tip);
+      position: absolute;
+      bottom: calc(100% + 8px);
+      right: 0;
+      width: 300px;
+      background: var(--gray-900);
+      color: var(--white);
+      font-size: 12px;
+      line-height: 1.5;
+      padding: 10px 14px;
+      border-radius: 6px;
+      white-space: normal;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.15s ease;
+      z-index: 10;
+      font-weight: 400;
+      font-style: normal;
+    }
+    .tip-wrap:hover::after { opacity: 1; }
+
+    /* ── GOAL CARDS ── */
+    .goal-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+    .goal-card {
+      background: var(--white);
+      border: 1px solid var(--gray-200);
+      border-top: 3px solid var(--green);
+      border-radius: 8px;
+      padding: 28px 24px;
+    }
+    .goal-card .goal-num {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--green);
+      margin-bottom: 12px;
+    }
+    .goal-card h3 {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--black);
+      margin-bottom: 10px;
+    }
+    .goal-card p {
+      font-size: 14px;
+      color: var(--gray-700);
+      line-height: 1.6;
+    }
+
+    /* ── SECTION LAYOUT ── */
+    .section { padding: 72px 40px; max-width: 1100px; margin: 0 auto; }
+    .bg-white  { background: var(--white); }
+    .bg-light  { background: var(--gray-100); }
+    .bg-green-pale { background: var(--green-pale); }
+
+    .section-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--green);
+      margin-bottom: 12px;
+    }
+
+    h2 {
+      font-size: clamp(24px, 3vw, 36px);
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      margin-bottom: 8px;
+      line-height: 1.2;
+      color: var(--black);
+    }
+    .section-intro {
+      font-size: 17px;
+      color: var(--gray-700);
+      max-width: 720px;
+      margin-bottom: 48px;
+    }
+
+    /* ── STAT CARDS ── */
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-bottom: 48px;
+    }
+    .stat-card {
+      background: var(--white);
+      border: 1px solid var(--gray-200);
+      border-radius: 8px;
+      padding: 28px 24px;
+    }
+    .bg-light .stat-card { background: var(--white); }
+    .stat-card.accent { border-top: 3px solid var(--green); }
+    .stat-card.warn   { border-top: 3px solid var(--amber); }
+    .stat-card.danger { border-top: 3px solid var(--red); }
+    .stat-card .stat-value {
+      font-size: 32px;
+      font-weight: 800;
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+    .stat-card .stat-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--gray-700);
+      margin-bottom: 4px;
+    }
+    .stat-card .stat-desc {
+      font-size: 12px;
+      color: var(--gray-500);
+      line-height: 1.4;
+    }
+    .stat-card.accent .stat-value { color: var(--green); }
+    .stat-card.warn   .stat-value { color: var(--amber); }
+    .stat-card.danger .stat-value { color: var(--red); }
+
+    /* ── PAIN ITEMS ── */
+    .pain-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+    }
+    .pain-card {
+      background: var(--white);
+      border-radius: 8px;
+      padding: 24px;
+      border: 1px solid var(--gray-200);
+    }
+    .pain-card h4 {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--black);
+    }
+    .pain-card h4 .dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--red);
+      flex-shrink: 0;
+    }
+    .pain-card p { font-size: 14px; color: var(--gray-700); line-height: 1.5; }
+    .pain-card .pain-number {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--red);
+      margin-top: 12px;
+    }
+
+    /* ── FEATURE TABLE ── */
+    .feature-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+      background: var(--white);
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid var(--gray-200);
+      margin-bottom: 32px;
+    }
+    .feature-table th {
+      background: var(--green);
+      color: var(--white);
+      padding: 14px 20px;
+      text-align: left;
+      font-size: 12px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+    .feature-table th:last-child { color: #c8f0e4; }
+    .feature-table td { padding: 14px 20px; border-bottom: 1px solid var(--gray-200); color: var(--gray-700); }
+    .feature-table tr:last-child td { border-bottom: none; }
+    .feature-table tr:nth-child(even) td { background: var(--gray-100); }
+    .feature-table td:first-child { font-weight: 600; color: var(--black); }
+    .tag-no  { color: var(--red);   font-weight: 600; }
+    .tag-yes { color: var(--green); font-weight: 600; }
+
+    /* ── CASE STUDY CARDS ── */
+    .case-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 24px;
+    }
+    .case-card {
+      background: var(--white);
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid var(--gray-200);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+    .case-card .case-header {
+      background: var(--green);
+      color: var(--white);
+      padding: 20px 24px;
+    }
+    .case-card .case-header h3 { font-size: 18px; font-weight: 800; margin-bottom: 4px; }
+    .case-card .case-header .case-tag { font-size: 12px; opacity: 0.85; }
+    .case-card .case-body { padding: 24px; }
+    .case-stat { display: flex; gap: 12px; margin-bottom: 14px; }
+    .case-stat .cs-val { font-size: 22px; font-weight: 800; color: var(--green); min-width: 80px; }
+    .case-stat .cs-text { font-size: 13px; color: var(--gray-700); line-height: 1.4; padding-top: 4px; }
+    .case-parallel {
+      margin-top: 16px;
+      padding: 12px 16px;
+      background: var(--green-pale);
+      border-radius: 6px;
+      font-size: 13px;
+      color: var(--green);
+      font-weight: 600;
+    }
+    .case-parallel span { font-weight: 400; color: var(--gray-700); }
+
+    /* ── WAITING SECTION ── */
+    .waiting-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 15px;
+      margin-bottom: 32px;
+      background: var(--white);
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid var(--gray-200);
+    }
+    .waiting-table th {
+      text-align: left;
+      padding: 14px 20px;
+      font-size: 12px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--white);
+      background: var(--green);
+    }
+    .waiting-table td {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--gray-200);
+      color: var(--gray-700);
+    }
+    .waiting-table tr:nth-child(even) td { background: var(--gray-100); }
+    .waiting-table td:last-child { font-weight: 700; color: var(--green); }
+    .waiting-table tr.total-row td {
+      font-weight: 800;
+      font-size: 16px;
+      color: var(--black);
+      border-top: 2px solid var(--green);
+      border-bottom: none;
+      background: var(--green-pale);
+    }
+    .waiting-table tr.total-row td:last-child { color: var(--red); }
+
+    .quote-block {
+      background: var(--green-pale);
+      border-left: 4px solid var(--green);
+      padding: 24px 28px;
+      border-radius: 0 8px 8px 0;
+      font-size: 17px;
+      font-style: italic;
+      color: var(--gray-900);
+      line-height: 1.6;
+      margin-top: 32px;
+    }
+
+    /* ── ROI SUMMARY ── */
+    .roi-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 32px;
+    }
+    @media (max-width: 600px) { .roi-grid { grid-template-columns: 1fr; } }
+    .roi-row {
+      background: var(--white);
+      border: 1px solid var(--gray-200);
+      border-radius: 8px;
+      padding: 20px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .roi-row .r-label { font-size: 14px; color: var(--gray-500); }
+    .roi-row .r-value { font-size: 20px; font-weight: 800; color: var(--black); }
+    .roi-row.highlight {
+      background: var(--green);
+      border-color: var(--green);
+    }
+    .roi-row.highlight .r-label { color: rgba(255,255,255,0.8); }
+    .roi-row.highlight .r-value { font-size: 28px; color: var(--white); }
+    .roi-row.subtotal .r-value { color: var(--green); }
+
+    .payback-banner {
+      background: linear-gradient(135deg, #006b50 0%, var(--green) 50%, var(--green-light) 100%);
+      border-radius: 10px;
+      padding: 32px 40px;
+      text-align: center;
+      font-size: 18px;
+      font-weight: 700;
+      color: rgba(255,255,255,0.9);
+      box-shadow: 0 4px 24px rgba(0,128,96,0.25);
+    }
+    .payback-banner span { font-size: 48px; display: block; margin-bottom: 6px; color: var(--white); letter-spacing: -1px; }
+
+    /* ── INVESTMENT ── */
+    .invest-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      max-width: 560px;
+    }
+    .invest-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 14px 20px;
+      background: var(--white);
+      border: 1px solid var(--gray-200);
+      border-bottom: none;
+      font-size: 15px;
+      color: var(--gray-700);
+    }
+    .invest-row:first-child { border-radius: 8px 8px 0 0; }
+    .invest-row.discount { color: var(--green); font-weight: 600; background: var(--green-pale); }
+    .invest-row.total {
+      background: var(--green);
+      color: var(--white);
+      font-size: 18px;
+      font-weight: 800;
+      border-radius: 0 0 8px 8px;
+      border: none;
+    }
+    .invest-row .val { font-weight: 700; }
+    .invest-row.discount .val { color: var(--green); }
+    .invest-row.total .val { color: var(--white); }
+
+    /* ── FOOTER ── */
+    .footer {
+      background: var(--gray-100);
+      border-top: 1px solid var(--gray-200);
+      color: var(--gray-500);
+      text-align: center;
+      padding: 32px 40px;
+      font-size: 13px;
+    }
+    .footer strong { color: var(--gray-700); }
+
+    /* ── DIVIDER ── */
+    .divider { height: 1px; background: var(--gray-200); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 640px) {
+      .hero, .section { padding: 48px 20px; }
+      .invest-col-grid { grid-template-columns: 1fr !important; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── HERO ── -->
+<div class="hero">
+  <div class="eyebrow">Prepared by your Shopify team · March 2026</div>
+  <h1>Wensco × <span>Shopify</span><br>ROI Analysis</h1>
+  <p class="subtitle">The business case for migrating to Shopify — what it costs to wait, and what's waiting on the other side.</p>
+</div>
+
+<!-- ── SECTION 1: CURRENT STATE ── -->
+<div class="bg-white">
+<div class="section">
+  <div class="section-label">Section 1 — Current State</div>
+  <h2>The Cost of Staying</h2>
+  <p class="section-intro">The custom Aldrich platform has become a liability — capping growth, draining operations, and requiring expensive dev for even basic changes.</p>
+
+  <div class="stat-grid">
+    <div class="stat-card accent">
+      <div class="stat-value">$7M–$11M</div>
+      <div class="stat-label">AOV Revenue Gap / Year</div>
+      <div class="stat-desc">Moving AOV from $500 → $650 across ~91,250 annual orders. Every month of delay = $570K–$910K left on the table.</div>
+    </div>
+    <div class="stat-card warn">
+      <div class="stat-value">$66,000</div>
+      <div class="stat-label">Annual Outsourced Dev Spend</div>
+      <div class="stat-desc">Aldrich charges $250–$299/hr for every site change — including basic updates Shopify merchants do themselves for free.</div>
+    </div>
+    <div class="stat-card danger">
+      <div class="stat-value">3,000</div>
+      <div class="stat-label">Shipping Calls / Year</div>
+      <div class="stat-desc">10–15 calls/day from customers getting incorrect UPS quotes. Root cause: P21 exports weight; current platform can't handle dimensional shipping.</div>
+    </div>
+    <div class="stat-card warn">
+      <div class="stat-value">520 hrs</div>
+      <div class="stat-label">Manual Product Team Time / Year</div>
+      <div class="stat-desc">Manual cross-sell entry, kit setup, and stock-out cleanup across 18,500 SKUs growing at 500+/month.</div>
+    </div>
+  </div>
+
+  <div class="pain-grid">
+    <div class="pain-card">
+      <h4><span class="dot"></span>Inventory Display Chaos</h4>
+      <p>8 locations, 2 display options: show all inventory everywhere, or show total quantity. No middle ground. Minneapolis buyers see Grand Rapids stock they can't access for weeks — triggering calls and complaints.</p>
+      <div class="pain-number">Zero location-based control</div>
+    </div>
+    <div class="pain-card">
+      <h4><span class="dot" style="background:var(--amber)"></span>Platform Instability</h4>
+      <p>Aldrich's AWS migration caused 12+ days of rolling failures in February 2026. Phone and rep-assisted orders spiked materially. Customer service manager couldn't attend trade events — team was "drowned."</p>
+      <div class="pain-number" style="color:var(--amber)">Live, documented outages</div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ── SECTION 2: STRATEGIC GOALS ── -->
+<div class="bg-light">
+<div class="section">
+  <div class="section-label">Section 2 — Strategic Initiatives</div>
+  <h2>Shopify Strategic Initiatives</h2>
+
+  <div class="goal-grid">
+    <div class="goal-card">
+      <div class="goal-num">01</div>
+      <h3>Increase AOV</h3>
+      <p>AI-powered upsells and cross-sells that surface the right products at the right moment — automated, not manual. Target: $500 → $650 across 91,250+ annual orders.</p>
+    </div>
+    <div class="goal-card">
+      <div class="goal-num">02</div>
+      <h3>Automate Operations</h3>
+      <p>Sidekick for AI-assisted merchandising, bulk editing across 18,500 SKUs, and rule-based workflows that eliminate hundreds of hours of manual team time per year.</p>
+    </div>
+    <div class="goal-card">
+      <div class="goal-num">03</div>
+      <h3>Customer Experience</h3>
+      <p>My Account, saved carts by job or project, and territory-based inventory — so customers reorder faster and reps spend less time on the phone.</p>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ── SECTION 3: SHOPIFY UPSIDE ── -->
+<div class="bg-light">
+<div class="section">
+  <div class="section-label">Section 3 — Shopify Upside</div>
+  <h2>What Gets Unlocked</h2>
+  <p class="section-intro">From AI-driven recommendations to location-aware inventory, here's what migrating to Shopify makes possible.</p>
+
+  <table class="feature-table">
+    <thead>
+      <tr>
+        <th>Capability</th>
+        <th>Today (Aldrich)</th>
+        <th>On Shopify</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Cross-sells &amp; Upsells</td>
+        <td><span class="tag-no">Manual, incomplete</span></td>
+        <td><span class="tag-yes">Automated, AI-driven</span></td>
+      </tr>
+      <tr>
+        <td>Product Kits &amp; Bundles</td>
+        <td><span class="tag-no">2–3 built</span></td>
+        <td><span class="tag-yes">150+ potential</span></td>
+      </tr>
+      <tr>
+        <td>AI Recommendations (Sidekick)</td>
+        <td><span class="tag-no">None</span></td>
+        <td><span class="tag-yes">Native</span></td>
+      </tr>
+      <tr>
+        <td>Inventory by Location / Customer</td>
+        <td><span class="tag-no">Show all or show total</span></td>
+        <td><span class="tag-yes">Fully rule-based</span></td>
+      </tr>
+      <tr>
+        <td>Mobile-Optimized B2B Cart</td>
+        <td><span class="tag-no">No</span></td>
+        <td><span class="tag-yes">Yes</span></td>
+      </tr>
+      <tr>
+        <td>Post-Purchase Offers</td>
+        <td><span class="tag-no">None</span></td>
+        <td><span class="tag-yes">App ecosystem</span></td>
+      </tr>
+      <tr>
+        <td>Self-Serve Reorder by Job / Project</td>
+        <td><span class="tag-no">Not available</span></td>
+        <td><span class="tag-yes">Native B2B</span></td>
+      </tr>
+      <tr>
+        <td>Site Changes</td>
+        <td><span class="tag-no">$250–$299/hr external dev</span></td>
+        <td><span class="tag-yes">Self-serve</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="stat-grid">
+    <div class="stat-card accent">
+      <div class="stat-value">+20%</div>
+      <div class="stat-label">Reorder Frequency</div>
+      <div class="stat-desc">Shopify B2B benchmark: 20%+ increase in reorders. At $500 AOV = $9.1M additional annual revenue.</div>
+    </div>
+    <div class="stat-card accent">
+      <div class="stat-value">1M+</div>
+      <div class="stat-label">SKU Capacity</div>
+      <div class="stat-desc">Shopify + Uncap scaled ULE Group (same Epicor ERP) to 1M+ SKUs with real-time inventory accuracy.</div>
+    </div>
+    <div class="stat-card accent">
+      <div class="stat-value">P21 ✓</div>
+      <div class="stat-label">Epicor Integration</div>
+      <div class="stat-desc">Uncap has already solved the P21 integration — for a client with the exact same ERP stack.</div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ── SECTION 3: PROMOTIONAL OFFER ── -->
+<div class="bg-white">
+<div class="section">
+  <div class="section-label">Section 4 — Promotional Offer</div>
+  <h2>An Offer Built for Right Now</h2>
+  <p class="section-intro">Shopify and Uncap have put together an unprecedented joint promotion to reduce the upfront barrier — available for a limited time.</p>
+
+  <div class="stat-grid" style="max-width:700px;">
+    <div class="stat-card accent">
+      <div class="stat-value">$13,800</div>
+      <div class="stat-label">Shopify — 6 Months Free</div>
+      <div class="stat-desc">$2,300 × 6 months in platform credits on a 3-year term.</div>
+    </div>
+    <div class="stat-card accent">
+      <div class="stat-value">$13,800</div>
+      <div class="stat-label">Uncap — 6 Months Matched</div>
+      <div class="stat-desc">$2,300 × 6 months discounted directly off the project estimate. Uncap is matching Shopify dollar for dollar.</div>
+    </div>
+  </div>
+
+  <div class="payback-banner">
+    <span>$27,600</span>
+    12 months of free promotional credits
+  </div>
+</div>
+</div>
+
+
+
+<!-- ── FOOTER ── -->
+<div class="footer">
+  <strong>Prepared by your Shopify team</strong> · March 2026<br>
+  <span style="margin-top:6px; display:block;">Data sourced from Wensco and Shopify benchmarks.</span>
+</div>
+
+</body>
+</html>
